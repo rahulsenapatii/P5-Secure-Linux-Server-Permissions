@@ -1,0 +1,32 @@
+Project 5: Secure Linux Server Permissions
+
+Overview & Write-Up:
+This project implements user-based and group-based access control on a Linux server. Two groups (development and operations) and three users (rahul and amit assigned to development, and vidit assigned to operations) were created. A restricted directory (/secure-project) and file (/secure-project/secret.txt) were configured with ownership set to root:development and recursive permissions set to 770 (rwxrwx---). This grants full read, write, and execute permissions to root and members of the development group (rahul and amit), while denying all access to users outside the group (vidit).
+
+Commands Used:
+
+1. Create Groups and Users:
+sudo groupadd development
+sudo groupadd operations
+sudo useradd -m -g development rahul
+sudo useradd -m -g development amit
+sudo useradd -m -g operations vidit
+id rahul && id amit && id vidit
+
+2. Create Directory, File, Ownership & Permissions:
+sudo mkdir /secure-project
+echo "Confidential Development Data" | sudo tee /secure-project/secret.txt
+sudo chown -R root:development /secure-project
+sudo chmod -R 770 /secure-project
+ls -ld /secure-project
+sudo ls -l /secure-project
+
+3. Verify Allowed & Denied Access:
+sudo -u rahul cat /secure-project/secret.txt
+sudo -u amit cat /secure-project/secret.txt
+sudo -u vidit cat /secure-project/secret.txt
+
+Verification Results:
+- rahul (development group): Allowed — read /secure-project/secret.txt successfully.
+- amit (development group): Allowed — read /secure-project/secret.txt successfully.
+- vidit (operations group): Denied — received Permission denied.
